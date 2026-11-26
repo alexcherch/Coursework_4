@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
-from .models import Habit, HabitCompletion
+from habits.models import Habit, HabitCompletion
 
 User = get_user_model()
 
