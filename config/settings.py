@@ -7,6 +7,7 @@ Values are read from environment variables (see .env.template).
 import os
 from pathlib import Path
 
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -173,6 +174,17 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {
+    "dispatch-habit-reminders": {
+        "task": "notifications.tasks.dispatch_habit_reminders",
+        "schedule": crontab(minute="*"),
+    },
+}
+
+
+# Telegram
+
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
 
 # Email
