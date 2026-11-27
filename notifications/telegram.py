@@ -29,9 +29,7 @@ def send_message(chat_id, text, *, token=None, timeout=REQUEST_TIMEOUT):
         raise TelegramError(f"Telegram request failed: {exc}") from exc
 
     if response.status_code != 200:
-        raise TelegramError(
-            f"Telegram API returned HTTP {response.status_code}: {response.text}"
-        )
+        raise TelegramError(f"Telegram API returned HTTP {response.status_code}: {response.text}")
 
     try:
         payload = response.json()

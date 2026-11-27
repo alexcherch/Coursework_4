@@ -10,3 +10,20 @@ select = ["E", "F", "I", "W"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py", "*_tests.py", "tests.py"]
 addopts = "-q"
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "manage.py",
+    "*/migrations/*",
+    "*/tests/*",
+    "config/wsgi.py",
+    "config/asgi.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+exclude_also = [
+    "if __name__ == .__main__.:",
+]

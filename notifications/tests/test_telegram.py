@@ -19,9 +19,7 @@ def test_send_message_success(mock_post):
     payload = send_message(123, "hello")
 
     assert payload["ok"] is True
-    assert mock_post.call_args.args[0] == (
-        "https://api.telegram.org/bottest-token/sendMessage"
-    )
+    assert mock_post.call_args.args[0] == ("https://api.telegram.org/bottest-token/sendMessage")
     assert mock_post.call_args.kwargs["json"] == {"chat_id": 123, "text": "hello"}
 
 

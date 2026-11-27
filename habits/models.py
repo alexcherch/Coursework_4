@@ -81,8 +81,7 @@ class Habit(models.Model):
                 name="habit_reward_xor_linked",
             ),
             models.CheckConstraint(
-                condition=Q(is_pleasant=False)
-                | (Q(reward="") & Q(linked_habit__isnull=True)),
+                condition=Q(is_pleasant=False) | (Q(reward="") & Q(linked_habit__isnull=True)),
                 name="habit_pleasant_has_no_reward_or_linked",
             ),
         ]

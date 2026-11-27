@@ -12,8 +12,23 @@ from .serializers import HabitCompletionSerializer, HabitSerializer
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["habits"], summary="List habits of the current user"),
-    create=extend_schema(tags=["habits"], summary="Create a habit"),
+    list=extend_schema(
+        tags=["habits"],
+        summary="List habits of the current user",
+        description=(
+            "Returns only the habits of the authenticated user. "
+            "Paginated with limit/offset (5 habits per page by default)."
+        ),
+    ),
+    create=extend_schema(
+        tags=["habits"],
+        summary="Create a habit",
+        description=(
+            "The owner is taken from the JWT. Business rules are validated: "
+            "reward and linked habit are mutually exclusive, duration is at most 120 seconds, "
+            "periodicity is between 1 and 7 days."
+        ),
+    ),
     retrieve=extend_schema(tags=["habits"], summary="Get a habit"),
     update=extend_schema(tags=["habits"], summary="Update a habit"),
     partial_update=extend_schema(tags=["habits"], summary="Partially update a habit"),
@@ -33,7 +48,14 @@ class HabitViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @extend_schema(tags=["habits"], summary="List public habits")
+    @extend_schema(
+        tags=["habits"],
+        summary="List public habits",
+        description=(
+            "Returns public habits of all users, including the current user. "
+            "Read-only: these habits cannot be edited or deleted through this endpoint."
+        ),
+    )
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
     def public(self, request):
         queryset = Habit.objects.filter(is_public=True).select_related("user")
@@ -44,6 +66,11 @@ class HabitViewSet(viewsets.ModelViewSet):
     @extend_schema(
         tags=["habits"],
         summary="Mark a habit as completed today",
+        description=(
+            "Creates a completion record for the current date. "
+            "Returns 201 when the record is created and 200 when the habit "
+            "has already been completed today."
+        ),
         responses={
             200: HabitCompletionSerializer,
             201: HabitCompletionSerializer,
